@@ -1,15 +1,79 @@
-<!DOCTYPE html>
-<header>
-    <div>
-        <img src="" alt="">
-        <a href="">Pricing</a>
-        <a href="">Courses</a>
-        <a href="">Blog</a>
-        <a href="">Forum</a>
+<style>
+    body {
+        margin: 0;
+
+    }
+
+    .bg-gray-900 {
+        background-color: #121826;
+        
+    }
+
+    .text-white {
+        color: white;
+    }
+
+    .block {
+        display: block;
+    }
+
+    .inline-block{
+        display: inline-block;
+    }
+
+    .inline{
+        display: inline;
+    }
+
+    .hidden {
+        display: none;
+    }
+
+    .flex {
+        display: flex;
+    }
+
+    .justify-between{
+        justify-content: space-between;
+    }
+
+    .justify-center{
+        justify-content: center;
+    }
+
+    .items-center {
+        align-items: center; 
+        
+    }
+
+    .m-8 {
+        margin: 8px;
+    }
+
+    .p-8 {
+        padding: 8px;
+    }
+</style>
+
+<header class="bg-gray-900 flex justify-between p-8">
+    <div class="flex justify-center items-center">
+        <img src="./logo.svg" alt="logo image"/>
+        <a href="" class="text-white" >Pricing</a>
+        <a href="" class="text-white">Courses</a>
+        <a href="" class="text-white">Blog</a>
+        <a href=""class="text-white">Forum</a>
     </div>
-    <div>
-        <a href="">Login</a>
+    <div class="flex items-center ">
+        <a href="" class="text-white">Login</a>
         <button>Sign Up</button>
     </div>
 </header>
 
+<!--
+-block
+-inline-block
+-inline
+-none
+
+-flex
+-->
