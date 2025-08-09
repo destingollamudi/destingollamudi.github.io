@@ -1,6 +1,13 @@
 const Header = () => {
+  const scrollToSection = (id) => {
+    const section = document.querySelector(id);
+    if (section) {
+      section.scrollIntoView({ behavior: "smooth" });
+    }
+  };
+
   return (
-        <header className="bg-slate-900 text-white shadow-lg">
+    <header className="bg-slate-900 text-white shadow-lg">
       <div className="container mx-auto px-4 py-6">
         <nav className="flex flex-col md:flex-row items-center justify-between">
           
@@ -11,21 +18,30 @@ const Header = () => {
           </div>
           
           <div className="flex space-x-6">
-            <a href="#about" className="text-gray-300 hover:text-blue-400 transition-colors">
-              About
-            </a>
-            <a href="#projects" className="text-gray-300 hover:text-blue-400 transition-colors">
-              Projects
-            </a>
-            <a href="#contact" className="text-gray-300 hover:text-blue-400 transition-colors">
+            <button
+              onClick={() => scrollToSection("#hero")}
+              className="text-gray-300 hover:text-blue-400 transition-colors"
+            >
+              Home
+            </button>
+            <button
+              onClick={() => scrollToSection("#experience")}
+              className="text-gray-300 hover:text-blue-400 transition-colors"
+            >
+              Experience
+            </button>
+            <button
+              onClick={() => scrollToSection("#contact")}
+              className="text-gray-300 hover:text-blue-400 transition-colors"
+            >
               Contact
-            </a>
+            </button>
           </div>
           
         </nav>
       </div>
     </header>
-  )
+  );
 }
 
 export default Header;

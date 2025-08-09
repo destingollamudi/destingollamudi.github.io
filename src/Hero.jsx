@@ -43,7 +43,9 @@ const Hero = () => {
     };
     
     const timer = setTimeout(type, isDeleting ? deleteSpeed : typeSpeed);
-    return () => clearTimeout(timer);
+    return () => { 
+      clearTimeout(timer);
+    };
   }, [charIndex, isDeleting, currentIndex, texts]);
 
   useEffect(() => {
@@ -51,14 +53,16 @@ const Hero = () => {
       setCurrentImageIndex((prevIndex) => (prevIndex + 1) % images.length);
     }, 3000); 
     
-    return () => clearInterval(imageTimer);
+    return () => {
+      clearInterval(imageTimer);
+    };
   }, [images.length]);
 
   const scrollToSection = (sectionId) => {
-  document.getElementById(sectionId)?.scrollIntoView({ 
-    behavior: 'smooth' 
-  });
-};
+    document.getElementById(sectionId)?.scrollIntoView({ 
+      behavior: 'smooth' 
+    });
+  };
 
   return (
     <section id="hero" className='bg-gradient-to-br from-slate-900 to-slate-800 min-h-screen flex items-center'>
@@ -79,9 +83,9 @@ const Hero = () => {
             </p>
             
             <div className="flex flex-col sm:flex-row gap-4">
-              <button onClick={() => scrollToSection('projects')}
-                className="bg-blue-500 hover:bg-blue-600 text-white font-semibold py-3 px-8 rounded-lg transition-all duration-300 transform hover:scale-105">
-                View My Work
+              <button onClick={() => scrollToSection('experience')}
+                className="bg-blue-500 hover:bg-blue-600 text-white font-semibold py-3 px-8 rounded-lg transition-all duration-300 transform hover:scale-105 shadow-lg">
+                My Experience
               </button>
               <button onClick={() => scrollToSection('contact')}
                 className="border-2 border-gray-400 text-gray-300 hover:border-blue-400 hover:text-blue-400 font-semibold py-3 px-8 rounded-lg transition-all duration-300">
