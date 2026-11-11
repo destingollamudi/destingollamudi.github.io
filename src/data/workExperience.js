@@ -17,7 +17,7 @@ export const workExperience = [
       'Sat in on code review every week, which is where I actually learned the codebase.',
       'Worked in two-week sprints with a real QA gate, so "done" meant done.',
     ],
-    technologies: ['Angular', 'ASP.NET', 'TypeScript', 'MS SQL Server'],
+    technologies: ['Angular', 'ASP.NET', 'MS SQL Server', 'MS Power Apps / Power Automate'],
     // Candid: the thing I'd tell you over coffee, not the thing on the resume.
     note: "I spent my first two weeks convinced the slowness was a rendering problem and rewrote a component for nothing. Then someone showed me the query plan. Now checking the plan is the first thing I do, not the last.",
   },

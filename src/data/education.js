@@ -5,7 +5,7 @@ export const education = [
   {
     title: 'B.S. Computer Science, Minor in Statistics',
     company: 'University of Florida',
-    period: '2022 – 2026 (expected)',
+    period: '2022 – 2026',
     location: 'Gainesville, FL',
     images: [
       { src: ufSign, alt: 'The University of Florida arch sign' },
@@ -18,7 +18,7 @@ export const education = [
       'Software Engineering Club and Catholic Gators.',
     ],
     technologies: ['Java', 'Python', 'C++', 'R', 'SQL'],
-    note: "Operating Systems was the class that broke me and then fixed me. I failed the first project deadline, rewrote the scheduler from scratch over a weekend, and it's still the code I'm proudest of.",
+    note: "",
   },
 ]
 

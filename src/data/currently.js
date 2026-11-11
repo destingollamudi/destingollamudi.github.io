@@ -25,12 +25,12 @@ export const manual = {
   // ✏️ What you're actively getting better at right now.
   learning: {
     label: 'Learning',
-    value: 'Postgres query plans — properly this time, not by guessing',
+    value: 'React - in depth',
   },
   // ✏️ Status line. This is the one recruiters read.
   status: {
     label: 'Status',
-    value: 'Graduating Spring 2026 · looking for new-grad SWE roles',
+    value: 'Delivery Analyst - Software Development, ServiceNow @ Deloitte',
   },
 }
 
