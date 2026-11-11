@@ -1,0 +1,84 @@
+<!doctype html>
+<!--
+  One-time helper: trades a developer token for your Music User Token (MUT).
+
+  This step can't be automated from the CLI — Apple's user-authorization flow
+  is a browser popup that needs a real Apple ID sign-in, so it has to run in
+  an actual browser once. The MUT it produces is long-lived; after this you
+  paste it into the APPLE_MUSIC_USER_TOKEN GitHub secret and never run this
+  page again unless Apple revokes it.
+
+  Don't open this by double-clicking (file://) — MusicKit's auth popup needs
+  a real origin to postMessage back to. Serve it locally instead:
+
+    npx serve scripts
+    # or: python3 -m http.server --directory scripts
+
+  then visit http://localhost:<port>/apple-music-authorize.html.
+-->
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<title>Apple Music — get your Music User Token</title>
+<style>
+  body { font: 15px/1.6 -apple-system, BlinkMacSystemFont, sans-serif; max-width: 36rem; margin: 3rem auto; padding: 0 1.5rem; color: #1a1714; }
+  code, pre { font-family: ui-monospace, Menlo, monospace; font-size: 13px; background: #f3efe9; border-radius: 4px; }
+  code { padding: .15em .4em; }
+  pre { padding: .75em 1em; overflow-x: auto; }
+  textarea, input { width: 100%; font-family: ui-monospace, Menlo, monospace; font-size: 12px; box-sizing: border-box; padding: .6em; border: 1px solid #ddd5c7; border-radius: 6px; }
+  textarea { height: 4.5rem; }
+  button { font-size: 15px; padding: .6em 1.3em; margin-top: .75em; cursor: pointer; border-radius: 8px; border: 1px solid #c2410c; background: #c2410c; color: white; }
+  button:hover { background: #9a3412; }
+  #result { margin-top: 1.5rem; display: none; }
+</style>
+</head>
+<body>
+<h1>Get your Music User Token</h1>
+
+<ol>
+  <li>
+    Generate a developer token:
+    <pre>APPLE_MUSIC_TEAM_ID=... APPLE_MUSIC_KEY_ID=... \
+APPLE_MUSIC_PRIVATE_KEY_PATH=./AuthKey_XXXX.p8 \
+node scripts/apple-music-dev-token.mjs</pre>
+  </li>
+  <li>Paste it below and click Connect.</li>
+  <li>Sign in with the Apple ID that has your Apple Music subscription.</li>
+  <li>Copy the token it shows you into the <code>APPLE_MUSIC_USER_TOKEN</code> GitHub secret.</li>
+</ol>
+
+<label for="devToken"><strong>Developer token</strong></label>
+<textarea id="devToken" placeholder="eyJhbGciOi..."></textarea>
+<p><button id="connect">Connect Apple Music</button></p>
+
+<div id="result">
+  <p><strong>Music User Token</strong> — copy this into <code>APPLE_MUSIC_USER_TOKEN</code>:</p>
+  <input id="token" readonly onclick="this.select()" />
+</div>
+
+<script src="https://js-cdn.music.apple.com/musickit/v3/musickit.js"></script>
+<script>
+  document.addEventListener('musickitloaded', () => {
+    document.getElementById('connect').addEventListener('click', async () => {
+      const developerToken = document.getElementById('devToken').value.trim()
+      if (!developerToken) {
+        alert('Paste your developer token first.')
+        return
+      }
+
+      try {
+        const music = await MusicKit.configure({
+          developerToken,
+          app: { name: 'destingollamudi.xyz token helper', build: '1.0.0' },
+        })
+        const userToken = await music.authorize()
+        document.getElementById('token').value = userToken
+        document.getElementById('result').style.display = 'block'
+      } catch (error) {
+        alert(`Authorization failed: ${error && error.message ? error.message : error}`)
+      }
+    })
+  })
+</script>
+</body>
+</html>

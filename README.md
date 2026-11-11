@@ -33,17 +33,21 @@ version buried every string in JSX and went a year without an update.
 ## The "Currently" strip
 
 The three live rows (last played / reading / last watched) are fetched
-**at build time by CI**, not in the browser. Three reasons, all unavoidable:
+**at build time by CI**, not in the browser:
 
 - **Letterboxd** has no public API. Its per-user RSS works, but sends no CORS
   headers, so a browser `fetch` is blocked.
 - **Goodreads** stopped issuing API keys in Dec 2020. Shelf RSS still works and
   is likewise CORS-blocked.
-- **Apple Music** (MusicKit) requires a developer token — a JWT signed with a
-  private `.p8` key, plus a Music User Token for anything personal. There is no
-  server here to hide that key in, so it can't be done from static JS.
-  **Last.fm** is the stand-in: Apple Music scrobbles into it, and a read-only
-  API key is safe in CI.
+- **Apple Music** (MusicKit) needs a developer token — a JWT signed with a
+  private `.p8` key — plus a Music User Token for anything personal. That
+  can't run in static JS (it would hand every visitor the signing key), but
+  it's not actually blocked otherwise: CI signs the token fresh on every run
+  (`scripts/lib/apple-music-token.mjs`, ES256 via Node's built-in `crypto`,
+  no JWT dependency needed) and calls the API the same way the other two
+  fetches do. The one genuine limitation: Apple's API has no live
+  "currently playing" endpoint — unlike Spotify, this is always *last*
+  played, never truly live.
 
 `scripts/fetch-now.mjs` reads those feeds server-side and writes
 `src/data/now.generated.json`. `.github/workflows/deploy.yml` runs it on a
@@ -52,26 +56,48 @@ unconfigured or failing is skipped — the previous value is kept, and the card
 falls back to the hardcoded strings in `currently.js`. A dead feed can never
 blank the card or fail the build.
 
-### Connecting the feeds
+### Setting up Apple Music (real data, one-time setup)
 
-In **Settings → Secrets and variables → Actions**:
+Requires an **Apple Developer Program membership ($99/yr)** — that's the
+actual cost of this, not a workaround. Once you have one:
 
-Repository **variables**:
+1. **developer.apple.com → Certificates, IDs & Profiles → Keys** → create a
+   key with **MusicKit** enabled. Download the `.p8` file (Apple only lets
+   you download it once) and note the **Key ID**. Your **Team ID** is on the
+   account's Membership page.
+2. In **Settings → Secrets and variables → Actions**, add:
+   - variables `APPLE_MUSIC_TEAM_ID`, `APPLE_MUSIC_KEY_ID` — not secret; both
+     travel inside the JWT itself (base64, not encrypted), so hiding them
+     here buys nothing.
+   - secret `APPLE_MUSIC_PRIVATE_KEY` — the full contents of the `.p8` file.
+3. **Get your Music User Token** (one-time, must happen in a real browser —
+   see the comment at the top of `scripts/apple-music-authorize.html` for
+   why this step can't be scripted):
+   ```
+   APPLE_MUSIC_TEAM_ID=... APPLE_MUSIC_KEY_ID=... \
+   APPLE_MUSIC_PRIVATE_KEY_PATH=./AuthKey_XXXX.p8 \
+   npm run apple-music-token
+   ```
+   Serve `scripts/apple-music-authorize.html` locally (`npx serve scripts`,
+   not `file://`), paste in that token, click Connect, sign in with the
+   Apple ID that has your subscription, and copy the Music User Token it
+   shows you into the secret `APPLE_MUSIC_USER_TOKEN`.
+4. Run the **Build & deploy** workflow manually once.
 
-| Name | Value |
-| --- | --- |
-| `LETTERBOXD_USER` | Your Letterboxd username |
-| `GOODREADS_USER_ID` | The number in your Goodreads profile URL |
-| `LASTFM_USER` | Your Last.fm username |
+If the Music User Token is ever revoked, the fetch just falls back to
+Last.fm (if set up) or the previous snapshot — it won't break the build.
+Repeat step 3 to reconnect.
 
-Repository **secret**:
+### Last.fm (fallback, no developer account needed)
 
-| Name | Value |
-| --- | --- |
-| `LASTFM_API_KEY` | From https://www.last.fm/api/account/create |
+Used automatically if Apple Music isn't configured, or if an Apple Music call
+fails. Apple Music scrobbles into Last.fm, so this still reflects what you're
+actually listening to — it just can't see Apple's catalog data directly.
 
-Then run the **Build & deploy** workflow manually once to populate the snapshot.
-Until all four are set the card shows its fallback text and says
+Repository **variables**: `LETTERBOXD_USER`, `GOODREADS_USER_ID`, `LASTFM_USER`
+Repository **secret**: `LASTFM_API_KEY` — from https://www.last.fm/api/account/create
+
+Until feeds are connected, the card shows its fallback text and says
 "feeds not connected yet".
 
 ## Deployment

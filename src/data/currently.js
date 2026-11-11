@@ -6,13 +6,12 @@ import generated from './now.generated.json'
  * Two kinds of data meet here:
  *
  *  1. `manual` — things only I know. ✏️ EDIT ME whenever they stop being true.
- *  2. `generated` — Letterboxd / Goodreads / Last.fm, refreshed by a scheduled
- *     GitHub Action (.github/workflows/refresh-now.yml). Never edited by hand.
+ *  2. `generated` — Letterboxd / Apple Music (or Last.fm) / Goodreads,
+ *     refreshed on a cron by .github/workflows/deploy.yml. Never edited by
+ *     hand — see scripts/fetch-now.mjs for why none of this runs in-browser.
  *
- * Browsers can't fetch those feeds directly (no CORS headers, and Apple Music
- * needs a signed JWT), so the fetch happens at build time and lands in
- * now.generated.json. If a feed is down the site quietly uses `fallback`
- * instead of rendering an empty card.
+ * If a feed is down or unconfigured the site quietly uses `fallback` instead
+ * of rendering an empty card.
  */
 
 export const manual = {

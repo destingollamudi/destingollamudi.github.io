@@ -5,7 +5,7 @@ name: Build & deploy
 on:
   push:
     branches: [main]
-  # Refresh the Letterboxd / Goodreads / Last.fm strip four times a day.
+  # Refresh the Letterboxd / Apple Music / Goodreads strip four times a day.
   schedule:
     - cron: '17 */6 * * *'
   workflow_dispatch:
@@ -37,6 +37,10 @@ jobs:
         env:
           LETTERBOXD_USER: ${{ vars.LETTERBOXD_USER }}
           GOODREADS_USER_ID: ${{ vars.GOODREADS_USER_ID }}
+          APPLE_MUSIC_TEAM_ID: ${{ vars.APPLE_MUSIC_TEAM_ID }}
+          APPLE_MUSIC_KEY_ID: ${{ vars.APPLE_MUSIC_KEY_ID }}
+          APPLE_MUSIC_PRIVATE_KEY: ${{ secrets.APPLE_MUSIC_PRIVATE_KEY }}
+          APPLE_MUSIC_USER_TOKEN: ${{ secrets.APPLE_MUSIC_USER_TOKEN }}
           LASTFM_USER: ${{ vars.LASTFM_USER }}
           LASTFM_API_KEY: ${{ secrets.LASTFM_API_KEY }}
         run: node scripts/fetch-now.mjs

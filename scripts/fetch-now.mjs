@@ -8,20 +8,36 @@
  *     response carries no CORS headers, so a browser fetch is blocked.
  *   - Goodreads killed its API for new keys in Dec 2020. Shelf RSS still
  *     works, and is likewise CORS-blocked.
- *   - Apple Music (MusicKit) needs a developer token: a JWT signed with a
- *     private .p8 key, plus a Music User Token for anything personal. Shipping
- *     that key in static JS would hand anyone my Apple Developer credentials.
- *     Last.fm is the practical stand-in — Apple Music scrobbles into it and a
- *     read-only API key is harmless in CI.
+ *   - Apple Music (MusicKit) needs a developer token — a JWT signed with a
+ *     private .p8 key — plus a Music User Token for anything personal.
+ *     Shipping that key in static JS would hand every visitor your Apple
+ *     Developer credentials, so it has to be signed server-side. That's not
+ *     the same as "can't be done": CI *is* server-side, so it signs the
+ *     token fresh on every run (lib/apple-music-token.mjs) and calls the API
+ *     the same way the Letterboxd/Goodreads fetches do. The Music User Token
+ *     itself is obtained once, by hand, via apple-music-authorize.html — see
+ *     that file for why that one step can't be scripted.
+ *
+ *     Real limitation, not a workaround-shaped one: Apple's API has no live
+ *     "currently playing" endpoint the way Spotify's does. This is always
+ *     "last played," never truly live — same as the Last.fm path below.
+ *
+ *     Last.fm remains the fallback for anyone who'd rather not pay for an
+ *     Apple Developer account ($99/yr) just for this card: Apple Music
+ *     scrobbles into Last.fm, and a read-only Last.fm key is harmless in CI.
  *
  * So: fetch server-side, commit a JSON snapshot, redeploy. The site stays
  * static and the data still moves.
  *
  * Config via env (set as GitHub Actions secrets/vars):
- *   LETTERBOXD_USER   e.g. "destingollamudi"
- *   GOODREADS_USER_ID numeric id from your profile URL
- *   LASTFM_USER       last.fm username
- *   LASTFM_API_KEY    https://www.last.fm/api/account/create
+ *   LETTERBOXD_USER         e.g. "destingollamudi"
+ *   GOODREADS_USER_ID       numeric id from your profile URL
+ *   APPLE_MUSIC_TEAM_ID     from developer.apple.com (not secret — see README)
+ *   APPLE_MUSIC_KEY_ID      ditto
+ *   APPLE_MUSIC_PRIVATE_KEY the .p8 file's contents — secret
+ *   APPLE_MUSIC_USER_TOKEN  from apple-music-authorize.html — secret
+ *   LASTFM_USER             last.fm username (fallback if Apple isn't set up)
+ *   LASTFM_API_KEY          https://www.last.fm/api/account/create
  *
  * Any missing/failing source is skipped, not fatal: a dead feed must never
  * take the build down or blank the card.
@@ -30,6 +46,7 @@
 import { writeFile, readFile } from 'node:fs/promises'
 import { fileURLToPath } from 'node:url'
 import { dirname, resolve } from 'node:path'
+import { createAppleDeveloperToken } from './lib/apple-music-token.mjs'
 
 const HERE = dirname(fileURLToPath(import.meta.url))
 const OUT = resolve(HERE, '../src/data/now.generated.json')
@@ -39,13 +56,13 @@ const env = (key) => (process.env[key] || '').trim()
 
 /* ------------------------------------------------------------------ utils */
 
-async function get(url) {
+async function get(url, headers = {}) {
   const controller = new AbortController()
   const timer = setTimeout(() => controller.abort(), TIMEOUT_MS)
   try {
     const res = await fetch(url, {
       signal: controller.signal,
-      headers: { 'user-agent': 'destingollamudi.xyz/now-fetcher' },
+      headers: { 'user-agent': 'destingollamudi.xyz/now-fetcher', ...headers },
     })
     if (!res.ok) throw new Error(`HTTP ${res.status}`)
     return await res.text()
@@ -133,7 +150,40 @@ async function fetchBook() {
   }
 }
 
-async function fetchMusic() {
+async function fetchAppleMusicTrack() {
+  const teamId = env('APPLE_MUSIC_TEAM_ID')
+  const keyId = env('APPLE_MUSIC_KEY_ID')
+  const privateKey = env('APPLE_MUSIC_PRIVATE_KEY')
+  const userToken = env('APPLE_MUSIC_USER_TOKEN')
+  if (!teamId || !keyId || !privateKey || !userToken) return null
+
+  const developerToken = createAppleDeveloperToken({ teamId, keyId, privateKey })
+
+  const body = await get('https://api.music.apple.com/v1/me/recent/played/tracks?limit=1', {
+    Authorization: `Bearer ${developerToken}`,
+    'Music-User-Token': userToken,
+  })
+  const track = JSON.parse(body)?.data?.[0]
+  const attrs = track?.attributes
+  if (!attrs?.name) return null
+
+  // Artwork URLs are templated — {w}/{h} get swapped for pixel dimensions.
+  const image = attrs.artwork?.url ? attrs.artwork.url.replace('{w}', '300').replace('{h}', '300') : null
+
+  return {
+    title: attrs.name,
+    artist: attrs.artistName || null,
+    album: attrs.albumName || null,
+    url: attrs.url || null,
+    image,
+    // Apple's API doesn't expose a live "now playing" state — see the file
+    // header. This is always "last played", never true.
+    nowPlaying: false,
+    playedAt: null,
+  }
+}
+
+async function fetchLastfmTrack() {
   const user = env('LASTFM_USER')
   const key = env('LASTFM_API_KEY')
   if (!user || !key) return null
@@ -158,6 +208,21 @@ async function fetchMusic() {
   }
 }
 
+/** Apple Music first (real data, no "now playing"); Last.fm as a fallback
+ *  for anyone who hasn't set up an Apple Developer key. */
+async function fetchMusic() {
+  try {
+    const apple = await fetchAppleMusicTrack()
+    if (apple) {
+      console.log('  (via Apple Music)')
+      return apple
+    }
+  } catch (error) {
+    console.warn(`  Apple Music failed (${error.message}), trying Last.fm`)
+  }
+  return fetchLastfmTrack()
+}
+
 /* ------------------------------------------------------------------- main */
 
 async function previous() {
@@ -171,7 +236,7 @@ async function previous() {
 const SOURCES = [
   ['film', fetchFilm, 'Letterboxd'],
   ['book', fetchBook, 'Goodreads'],
-  ['music', fetchMusic, 'Last.fm'],
+  ['music', fetchMusic, 'Music'],
 ]
 
 const prior = await previous()
