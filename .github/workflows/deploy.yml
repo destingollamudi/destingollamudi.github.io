@@ -1,0 +1,72 @@
+name: Build & deploy
+
+# Pages serves this site from the gh-pages branch, so every path here ends in
+# a force-push of dist/ to that branch.
+on:
+  push:
+    branches: [main]
+  # Refresh the Letterboxd / Goodreads / Last.fm strip four times a day.
+  schedule:
+    - cron: '17 */6 * * *'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: deploy
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - run: npm ci
+
+      # Only on schedule/manual runs — a plain code push shouldn't burn API
+      # calls or rewrite the snapshot.
+      - name: Refresh "Currently" feeds
+        if: github.event_name != 'push'
+        env:
+          LETTERBOXD_USER: ${{ vars.LETTERBOXD_USER }}
+          GOODREADS_USER_ID: ${{ vars.GOODREADS_USER_ID }}
+          LASTFM_USER: ${{ vars.LASTFM_USER }}
+          LASTFM_API_KEY: ${{ secrets.LASTFM_API_KEY }}
+        run: node scripts/fetch-now.mjs
+
+      - name: Commit the snapshot if anything moved
+        if: github.event_name != 'push'
+        run: |
+          if [ -n "$(git status --porcelain src/data/now.generated.json)" ]; then
+            git config user.name 'github-actions[bot]'
+            git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+            git add src/data/now.generated.json
+            git commit -m 'chore: refresh now feeds'
+            git push
+          else
+            echo 'No change in now.generated.json'
+          fi
+
+      - run: npm run build
+
+      # Published by hand rather than with a third-party action: it's ten lines
+      # and it's one less thing with push access to this repo.
+      - name: Publish dist/ to gh-pages
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          cd dist
+          git init -q
+          git checkout -q -b gh-pages
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add -A
+          git commit -q -m "Deploy ${GITHUB_SHA::7}"
+          git push -qf "https://x-access-token:${GH_TOKEN}@github.com/${GITHUB_REPOSITORY}.git" gh-pages

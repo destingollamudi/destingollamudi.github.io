@@ -3,12 +3,50 @@
   <head>
     <meta charset="UTF-8" />
     <link rel="icon" type="image/svg+xml" href="/vite.svg" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Destin Gollamudi</title>
-    <script type="module" crossorigin src="/assets/index-D1e7eDJV.js"></script>
-    <link rel="stylesheet" crossorigin href="/assets/index-CDhwsLg-.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+
+    <title>Destin Gollamudi — Software Engineer</title>
+    <meta
+      name="description"
+      content="Destin Gollamudi — CS student at the University of Florida. I build full-stack web apps, tune slow SQL for sport, and move pallets at a food bank on weekends."
+    />
+    <meta name="theme-color" content="#fbf9f6" media="(prefers-color-scheme: light)" />
+    <meta name="theme-color" content="#121110" media="(prefers-color-scheme: dark)" />
+
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content="Destin Gollamudi — Software Engineer" />
+    <meta
+      property="og:description"
+      content="Full-stack web apps, slow SQL made fast, and what I'm actually up to this week."
+    />
+    <meta property="og:url" content="https://www.destingollamudi.xyz/" />
+    <meta name="twitter:card" content="summary_large_image" />
+
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,600;0,9..144,700;1,9..144,400&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap"
+      rel="stylesheet"
+    />
+
+    <!-- Resolve the theme before first paint. Without this the page flashes
+         light for a frame on a dark-mode load, which looks broken. -->
+    <script>
+      (function () {
+        try {
+          var saved = localStorage.getItem('theme');
+          var prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+          if (saved === 'dark' || (!saved && prefersDark)) {
+            document.documentElement.classList.add('dark');
+          }
+        } catch (e) {
+          /* private mode / blocked storage: fall through to light */
+        }
+      })();
+    </script>
   </head>
   <body>
-    <div id="root"></div>
+    <div id="root"></div>
+    <script type="module" src="/src/main.jsx"></script>
   </body>
 </html>

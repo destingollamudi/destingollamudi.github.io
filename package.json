@@ -1,13 +1,14 @@
 {
-  "name": "personal-website",
+  "name": "destingollamudi-xyz",
   "private": true,
   "version": "0.0.0",
   "type": "module",
   "scripts": {
     "dev": "vite",
     "build": "vite build",
-    "lint": "eslint .",
     "preview": "vite preview",
+    "lint": "eslint .",
+    "now": "node scripts/fetch-now.mjs",
     "predeploy": "npm run build",
     "deploy": "gh-pages -d dist"
   },

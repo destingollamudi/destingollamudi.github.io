@@ -1,3 +1,110 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+/* ---------------------------------------------------------------------------
+   Design tokens. Every colour on the site resolves through one of these, which
+   is the only reason light + dark both stay coherent. Values are raw RGB
+   channels so Tailwind's /opacity modifiers keep working (bg-accent/10, etc).
+   --------------------------------------------------------------------------- */
+@layer base {
+  :root {
+    --bg: 251 249 246;          /* warm paper, not the usual dead white */
+    --surface: 255 255 255;
+    --surface-2: 243 239 233;
+    --line: 229 222 212;
+    --ink: 26 23 20;
+    --muted: 107 98 90;
+    --accent: 194 65 12;        /* ember — reads as a decision, not a default */
+    --accent-soft: 255 241 232;
+    color-scheme: light;
+  }
+
+  .dark {
+    --bg: 18 17 16;
+    --surface: 26 25 23;
+    --surface-2: 35 34 32;
+    --line: 48 46 42;
+    --ink: 245 242 237;
+    --muted: 163 155 146;
+    --accent: 251 146 60;
+    --accent-soft: 42 28 18;
+    color-scheme: dark;
+  }
+
+  html {
+    scroll-behavior: smooth;
+    -webkit-text-size-adjust: 100%;
+  }
+
+  body {
+    @apply bg-bg text-ink font-sans antialiased;
+    font-feature-settings: 'cv05' 1, 'ss03' 1;
+  }
+
+  /* Fraunces is a variable font; dialing SOFT/WONK is what makes headlines feel
+     like a voice instead of a fallback serif. */
+  .font-display {
+    font-variation-settings: 'SOFT' 40, 'WONK' 1, 'opsz' 100;
+  }
+
+  ::selection {
+    @apply bg-accent/25;
+  }
+
+  :focus-visible {
+    @apply outline-none ring-2 ring-accent ring-offset-2 ring-offset-bg rounded-sm;
+  }
+}
+
+@layer components {
+  /* Nav / inline links: the underline grows from the left on hover. */
+  .link-underline {
+    @apply relative;
+  }
+  .link-underline::after {
+    content: '';
+    @apply absolute left-0 -bottom-0.5 h-px w-full origin-right scale-x-0 bg-accent transition-transform duration-300;
+  }
+  .link-underline:hover::after,
+  .link-underline:focus-visible::after {
+    @apply origin-left scale-x-100;
+  }
+
+  .card {
+    @apply rounded-2xl border border-line bg-surface;
+  }
+
+  /* Buttons get a deliberate, slightly over-eager lift. */
+  .btn {
+    @apply inline-flex items-center justify-center gap-2 rounded-xl px-5 py-3 text-sm font-semibold
+           transition-all duration-200 ease-out active:translate-y-0 active:scale-[.98];
+  }
+  .btn-primary {
+    @apply btn bg-accent text-white hover:-translate-y-0.5 hover:shadow-lg hover:shadow-accent/25;
+  }
+  .btn-ghost {
+    @apply btn border border-line text-ink hover:-translate-y-0.5 hover:border-accent hover:text-accent;
+  }
+
+  .tag {
+    @apply rounded-full border border-line bg-surface2 px-2.5 py-1 font-mono text-xs text-muted;
+  }
+
+  .eyebrow {
+    @apply font-mono text-xs uppercase tracking-[0.2em] text-muted;
+  }
+}
+
+/* Honour the OS setting. Motion is personality, not a tax on people who get
+   motion sick — every animation here is decorative, so it can all stop. */
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  *,
+  *::before,
+  *::after {
+    animation-duration: .001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: .001ms !important;
+  }
+}
