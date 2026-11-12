@@ -11,7 +11,6 @@ export const site = {
   employer: 'Deloitte',
 
   university: 'University of Florida',
-  classOf: 2026,
   graduated: 'May 2026',
 
   location: 'Orlando, FL',
@@ -20,7 +19,7 @@ export const site = {
     'ServiceNow developer at Deloitte, UF grad, and a Bucs fan who sets his fantasy lineup way too early.',
 
   intro:
-    "I'm a ServiceNow developer at Deloitte, building solutions and customizations for government clients. I graduated from the University of Florida in May 2026 with a B.S. in Computer Science and a minor in Statistics — which mostly means I can calculate exactly how unlikely a Bucs comeback is, and then watch anyway. I live in Orlando. Off the clock I'm on a tennis or pickleball court, out on a trail, or overthinking a fantasy football trade, and some Saturdays I volunteer at a food bank.",
+    "I'm a ServiceNow developer at Deloitte, building solutions and customizations for government clients. I graduated from the University of Florida in May 2026 with a B.S. in Computer Science and a minor in Statistics — which mostly means I can calculate exactly how unlikely a Bucs comeback is, and then watch anyway. I live in Orlando. Off the clock I'm on a tennis or pickleball court, out on a trail, or overthinking a fantasy football trade.",
 
   interests: ['American football', 'Tennis', 'Pickleball', 'Hiking', 'Fantasy football'],
 

@@ -1,41 +1,29 @@
 /**
- * My World — everything else. Each group is a titled list; add a group or an
- * item and it appears.
+ * My World — faith, hobbies, teams and travel in one place.
+ * Add an interest and it appears as a collectible; `note` is optional.
  */
-export interface WorldItem {
+export const philosophy = {
+  title: 'Faith',
+  text: 'My Catholic faith governs my entire life and is my anchor. Everything else on this site comes after it.',
+}
+
+export interface Interest {
   name: string
-  note?: string
-  href?: string
-  placeholder?: boolean
-}
-
-export interface WorldGroup {
-  title: string
   emoji: string
-  items: WorldItem[]
+  note?: string
 }
 
-export const world: WorldGroup[] = [
-  {
-    title: 'Faith',
-    emoji: '✝️',
-    items: [
-      {
-        name: 'Catholic',
-        note: 'My Catholic faith governs my entire life and is my anchor. Everything else on this site comes after it.',
-      },
-    ],
-  },
-  {
-    title: 'Sports teams',
-    emoji: '🏟️',
-    items: [
-      { name: 'Florida Gators', note: 'Obviously.' },
-      { name: 'Tampa Bay Buccaneers' },
-      { name: 'Tampa Bay Rays' },
-      { name: 'Orlando City SC', note: 'Working on becoming a fan now that I live here.' },
-    ],
-  },
+export const interests: Interest[] = [
+  { name: 'American football', emoji: '🏈' },
+  { name: 'Tennis', emoji: '🎾' },
+  { name: 'Pickleball', emoji: '🏓' },
+  { name: 'Hiking', emoji: '🥾' },
+  { name: 'Fantasy football', emoji: '📋' },
+  { name: 'Traveling', emoji: '✈️' },
+  { name: 'Florida Gators', emoji: '🐊', note: 'Obviously.' },
+  { name: 'Tampa Bay Buccaneers', emoji: '🏴‍☠️' },
+  { name: 'Tampa Bay Rays', emoji: '⚾' },
+  { name: 'Orlando City SC', emoji: '⚽', note: 'Getting into it now that I live here.' },
 ]
 
-export default world
+export default interests

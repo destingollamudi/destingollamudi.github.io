@@ -45,12 +45,6 @@ export interface Project extends Placeholderable {
   learned?: string
 }
 
-export interface Hobby extends Placeholderable {
-  name: string
-  emoji: string
-  blurb?: string
-}
-
 export interface Quest extends Placeholderable {
   title: string
   kind: 'Technology' | 'Course' | 'Concept' | 'Project' | 'Career'

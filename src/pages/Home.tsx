@@ -34,18 +34,17 @@ function LiveSlot({ label, title, sub, image, href, emptyHint }: { label: string
     </div>
   )
   return href ? (
-    <a href={href} target="_blank" rel="noreferrer noopener" className="block transition hover:-translate-y-0.5">
+    <a href={href} target="_blank" rel="noreferrer noopener" className="block min-w-0 transition hover:-translate-y-0.5">
       {body}
     </a>
   ) : (
-    body
+    <div className="min-w-0">{body}</div>
   )
 }
 
 export default function Home() {
   const book = feeds.reading[0]
   const film = feeds.films[0]
-  const track = feeds.music
 
   return (
     <div className="space-y-10">
@@ -58,9 +57,6 @@ export default function Home() {
             <a href="#/profile" className="flex items-center gap-3 rounded-full border-[3px] border-ink bg-gradient-to-b from-[#3b37b8] to-night py-1 pl-1 pr-5 shadow-[0_6px_12px_rgba(18,11,38,.6)] transition hover:brightness-110">
               <span className="relative">
                 <img src={selfie} alt={`Photo of ${site.name}`} className="h-14 w-14 rounded-full border-[3px] border-ink object-cover" />
-                <span className="game-text-sm absolute -bottom-1 -right-1 grid h-6 min-w-6 place-items-center rounded-lg border-2 border-ink bg-gradient-to-b from-aether-light to-[#0e93aa] px-1 text-[11px]">
-                  ’{String(site.classOf).slice(2)}
-                </span>
               </span>
               <span className="leading-tight">
                 <span id="hero-name" className="game-text-sm block text-lg">{site.name}</span>
@@ -82,7 +78,7 @@ export default function Home() {
             <p className="mx-auto mt-4 max-w-xl text-base font-bold text-cream/90 sm:text-lg">{site.tagline}</p>
             <div className="mt-6 flex flex-wrap justify-center gap-3">
               <GameButton href="#/profile" className="min-w-48 text-2xl">Enter profile</GameButton>
-              <GameButton href="#/achievements" tone="teal" className="text-2xl">Projects</GameButton>
+              <GameButton href="#/quiz" tone="teal" className="text-2xl">⚔️ Quiz challenge</GameButton>
               <GameButton href="#/clan" tone="violet" className="text-2xl">Contact</GameButton>
             </div>
           </div>
@@ -92,10 +88,9 @@ export default function Home() {
       {/* Live tiles */}
       <section aria-labelledby="live-heading">
         <h2 id="live-heading" className="game-text-sm mb-3 text-xl uppercase tracking-wider">Live from the kingdom</h2>
-        <div className="grid gap-3 sm:grid-cols-3">
+        <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
           <LiveSlot label="Reading" title={book?.title} sub={book?.author} image={book?.image} href={book?.url} emptyHint="Hardcover not connected yet" />
           <LiveSlot label="Last watched" title={film?.title} sub={[film?.year, film?.stars].filter(Boolean).join(' · ')} image={film?.image} href={film?.url} emptyHint="Letterboxd not connected yet" />
-          <LiveSlot label="Last played" title={track?.title} sub={track?.artist} image={track?.image} href={track?.url} emptyHint="Music not connected yet" />
         </div>
       </section>
 

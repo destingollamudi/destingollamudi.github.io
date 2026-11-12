@@ -19,7 +19,6 @@ export default function Profile() {
     ['Roles', career.length],
     ['Projects', projects.length],
     ['Tech cards', tech.length],
-    ['Class of', site.classOf],
   ]
 
   return (
@@ -37,9 +36,6 @@ export default function Profile() {
               alt={`Photo of ${site.name}`}
               className="h-32 w-32 rounded-full border-[5px] border-gold object-cover shadow-[0_0_0_3px_#120B26,0_0_24px_rgba(255,181,46,.6)]"
             />
-            <span className="game-text-sm absolute -bottom-1 -right-1 rounded-xl border-[3px] border-ink bg-gradient-to-b from-aether-light to-[#0e93aa] px-2 py-0.5 text-lg">
-              ’{String(site.classOf).slice(2)}
-            </span>
           </div>
           <div>
             <h2 className="text-4xl leading-none sm:text-5xl">
@@ -61,7 +57,8 @@ export default function Profile() {
           </div>
           <div className="mt-6 flex flex-wrap gap-3">
             <GameButton href="#/career" small>Career history</GameButton>
-            <GameButton href="#/hobbies" small tone="teal">Hobbies</GameButton>
+            <GameButton href="#/world" small tone="teal">My World</GameButton>
+            <GameButton href="#/quiz" small tone="violet">Take the quiz</GameButton>
           </div>
         </Panel>
 
@@ -80,7 +77,7 @@ export default function Profile() {
               ))}
             </dl>
           </Panel>
-          <div className="grid grid-cols-2 gap-3">
+          <div className="grid grid-cols-3 gap-3">
             {stats.map(([k, v]) => (
               <div key={k} className="panel p-3">
                 <p className="font-game text-xs uppercase tracking-widest text-mist">{k}</p>

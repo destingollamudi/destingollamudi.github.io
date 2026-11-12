@@ -4,7 +4,7 @@ import { site } from '../data/site'
 import { feeds } from '../data/feeds'
 import { Insignia } from './Insignia'
 
-const groups = ['Professional', 'Personal', 'Contact'] as const
+const groups = ['Play', 'Professional', 'Personal', 'Contact'] as const
 
 function NavList({ route, onPick }: { route: string; onPick?: () => void }) {
   return (
@@ -84,14 +84,6 @@ export function Shell({ route, children }: { route: string; children: ReactNode 
           <div className="ml-auto flex items-center gap-2">
             <a href={site.links.github} target="_blank" rel="noreferrer noopener" className="btn btn-violet btn-sm hidden sm:inline-flex">GitHub</a>
             <a href={site.links.linkedin} target="_blank" rel="noreferrer noopener" className="btn btn-teal btn-sm hidden sm:inline-flex">LinkedIn</a>
-            <button
-              className="btn btn-gold btn-sm lg:hidden"
-              aria-expanded={menuOpen}
-              aria-controls="mobile-menu"
-              onClick={() => setMenuOpen((o) => !o)}
-            >
-              ☰ Menu
-            </button>
           </div>
         </div>
       </header>

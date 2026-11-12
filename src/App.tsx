@@ -11,7 +11,7 @@ import Cards from './pages/Cards'
 import Achievements from './pages/Achievements'
 import Academy from './pages/Academy'
 import Quests from './pages/Quests'
-import Hobbies from './pages/Hobbies'
+import Quiz from './pages/Quiz'
 import Watchlist from './pages/Watchlist'
 import Library from './pages/Library'
 import World from './pages/World'
@@ -25,7 +25,7 @@ const PAGES: Record<string, ComponentType> = {
   '/achievements': Achievements,
   '/academy': Academy,
   '/quests': Quests,
-  '/hobbies': Hobbies,
+  '/quiz': Quiz,
   '/watchlist': Watchlist,
   '/library': Library,
   '/world': World,
