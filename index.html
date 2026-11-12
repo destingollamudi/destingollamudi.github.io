@@ -2,22 +2,21 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <link rel="icon" type="image/svg+xml" href="/vite.svg" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
 
     <title>Destin Gollamudi — Software Engineer</title>
     <meta
       name="description"
-      content="Destin Gollamudi — CS student at the University of Florida. I build full-stack web apps, tune slow SQL for sport, and move pallets at a food bank on weekends."
+      content="Destin Gollamudi — software engineer and UF Computer Science grad. Explore my career, projects, tech stack, and what I'm reading and watching."
     />
-    <meta name="theme-color" content="#fbf9f6" media="(prefers-color-scheme: light)" />
-    <meta name="theme-color" content="#121110" media="(prefers-color-scheme: dark)" />
+    <meta name="theme-color" content="#120B26" />
 
     <meta property="og:type" content="website" />
     <meta property="og:title" content="Destin Gollamudi — Software Engineer" />
     <meta
       property="og:description"
-      content="Full-stack web apps, slow SQL made fast, and what I'm actually up to this week."
+      content="My personal site, built like a game: career history, projects, tech stack, and what I'm reading and watching."
     />
     <meta property="og:url" content="https://www.destingollamudi.xyz/" />
     <meta name="twitter:card" content="summary_large_image" />
@@ -25,28 +24,12 @@
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
-      href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,600;0,9..144,700;1,9..144,400&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap"
+      href="https://fonts.googleapis.com/css2?family=Cinzel:wght@700;900&family=Lilita+One&family=Luckiest+Guy&family=Nunito:wght@600;700;800;900&display=swap"
       rel="stylesheet"
     />
-
-    <!-- Resolve the theme before first paint. Without this the page flashes
-         light for a frame on a dark-mode load, which looks broken. -->
-    <script>
-      (function () {
-        try {
-          var saved = localStorage.getItem('theme');
-          var prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-          if (saved === 'dark' || (!saved && prefersDark)) {
-            document.documentElement.classList.add('dark');
-          }
-        } catch (e) {
-          /* private mode / blocked storage: fall through to light */
-        }
-      })();
-    </script>
   </head>
   <body>
     <div id="root"></div>
-    <script type="module" src="/src/main.jsx"></script>
+    <script type="module" src="/src/main.tsx"></script>
   </body>
 </html>

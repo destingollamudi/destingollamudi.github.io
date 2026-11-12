@@ -1,6 +1,6 @@
 # destingollamudi.xyz
 
-My personal site. React + Vite + Tailwind, deployed as static files to GitHub
+My personal site. React + TypeScript + Vite + Tailwind, deployed as static files to GitHub
 Pages behind a custom domain.
 
 ```bash
@@ -18,14 +18,18 @@ No copy is hardcoded in a component. Everything the site says comes from
 
 | File | What it holds |
 | --- | --- |
-| `site.js` | Name, tagline, intro, nav, social links, Formspree endpoint |
-| `currently.js` | The "Currently" card — hand-written lines + feed merge logic |
-| `workExperience.js` | Jobs |
-| `education.js` | School |
-| `projects.js` | Projects, including the `why` / `roadblock` notes |
-| `gallery.js` | "Behind the scenes" photos and captions |
-| `uses.js` | The `/#/uses` page |
-| `now.generated.json` | **Generated.** Do not edit — CI overwrites it. |
+| `site.ts` | Name, occupation, intro, links, résumé URL, Formspree endpoint |
+| `career.ts` | Career History (jobs) |
+| `education.ts` | Academy (school, coursework, honors) |
+| `projects.ts` | Achievements (projects, incl. "what I learned") |
+| `tech.ts` | Card Collection — set each card's `level` (1–5) |
+| `quests.ts` | Active Quests (what I'm learning) |
+| `hobbies.ts`, `gallery.ts` | Beyond the Arena |
+| `watchlist.ts`, `library.ts`, `world.ts` | Hand-picked favorites |
+| `now.generated.json` | **Generated.** Letterboxd/Hardcover/music — CI overwrites it. |
+
+Anything marked `placeholder: true` (or starting with ✏️) renders with a
+dashed "✏️ placeholder" tag until you replace it.
 
 To update the site, edit a data file. That's the whole point — the previous
 version buried every string in JSX and went a year without an update.
@@ -37,8 +41,9 @@ The three live rows (last played / reading / last watched) are fetched
 
 - **Letterboxd** has no public API. Its per-user RSS works, but sends no CORS
   headers, so a browser `fetch` is blocked.
-- **Goodreads** stopped issuing API keys in Dec 2020. Shelf RSS still works and
-  is likewise CORS-blocked.
+- **Hardcover** (reading) has a GraphQL API, but it needs a personal token —
+  shipping that in static JS would leak it, so CI holds it as a secret.
+  (Goodreads killed its API in 2020 and its shelf RSS now 404s for everyone.)
 - **Apple Music** (MusicKit) needs a developer token — a JWT signed with a
   private `.p8` key — plus a Music User Token for anything personal. That
   can't run in static JS (it would hand every visitor the signing key), but
@@ -94,7 +99,8 @@ Used automatically if Apple Music isn't configured, or if an Apple Music call
 fails. Apple Music scrobbles into Last.fm, so this still reflects what you're
 actually listening to — it just can't see Apple's catalog data directly.
 
-Repository **variables**: `LETTERBOXD_USER`, `GOODREADS_USER_ID`, `LASTFM_USER`
+Repository **variables**: `LETTERBOXD_USER`, `LASTFM_USER`
+Repository **secret**: `HARDCOVER_TOKEN` — from https://hardcover.app/account/api
 Repository **secret**: `LASTFM_API_KEY` — from https://www.last.fm/api/account/create
 
 Until feeds are connected, the card shows its fallback text and says

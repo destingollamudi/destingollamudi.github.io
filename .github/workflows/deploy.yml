@@ -5,7 +5,7 @@ name: Build & deploy
 on:
   push:
     branches: [main]
-  # Refresh the Letterboxd / Apple Music / Goodreads strip four times a day.
+  # Refresh the Letterboxd / Apple Music / Hardcover feeds four times a day.
   schedule:
     - cron: '17 */6 * * *'
   workflow_dispatch:
@@ -36,7 +36,7 @@ jobs:
         if: github.event_name != 'push'
         env:
           LETTERBOXD_USER: ${{ vars.LETTERBOXD_USER }}
-          GOODREADS_USER_ID: ${{ vars.GOODREADS_USER_ID }}
+          HARDCOVER_TOKEN: ${{ secrets.HARDCOVER_TOKEN }}
           APPLE_MUSIC_TEAM_ID: ${{ vars.APPLE_MUSIC_TEAM_ID }}
           APPLE_MUSIC_KEY_ID: ${{ vars.APPLE_MUSIC_KEY_ID }}
           APPLE_MUSIC_PRIVATE_KEY: ${{ secrets.APPLE_MUSIC_PRIVATE_KEY }}
