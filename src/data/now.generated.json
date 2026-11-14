@@ -1,7 +1,17 @@
 {
-  "updatedAt": "2026-11-12T05:43:40.178Z",
+  "updatedAt": "2026-11-14T06:36:02.050Z",
   "music": null,
   "films": [
+    {
+      "title": "Clayface",
+      "year": "2026",
+      "stars": "★★★½",
+      "rewatch": false,
+      "review": "Dude is Jensen Huang",
+      "url": "https://letterboxd.com/destingollamudi/film/clayface/",
+      "image": "https://a.ltrbxd.com/resized/film-poster/1/2/8/4/6/3/6/1284636-clayface-0-600-0-900-crop.jpg?v=eb305849d5",
+      "watchedAt": "2026-11-13"
+    },
     {
       "title": "Whiplash",
       "year": "2014",
